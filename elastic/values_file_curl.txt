@@ -1,0 +1,2 @@
+You can get the values file from here (Existing file has increased cpu and memory limits):
+curl -O https://raw.githubusercontent.com/elastic/Helm-charts/master/elasticsearch/examples/minikube/values.yaml

@@ -2,8 +2,9 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-echo "${bold}Adding helm charts for kube-prometheus-stack${normal}"
+echo "${bold}Adding helm charts for kube-prometheus-stack and elk-stack${normal}"
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add elastic https://helm.elastic.co 
 echo "${bold}------------------------------------------------------${normal}"
 
 echo "${bold}Starting minikube${normal}"
@@ -12,9 +13,10 @@ echo "${bold}------------------------------------------------------${normal}"
 echo "${bold}Adding minikube metrics-server addon${normal}"
 minikube addons enable metrics-server
 echo "${bold}------------------------------------------------------${normal}"
-echo "${bold}Creating 'personal' and 'monitoring' namespace${normal}"
+echo "${bold}Creating additional namespaces${normal}"
 kubectl create namespace personal
 kubectl create namespace monitoring
+kubectl create namespace elastic
 echo "${bold}------------------------------------------------------${normal}"
 
 echo "${bold}Building docker image for service-a${normal}"
@@ -47,4 +49,12 @@ echo "${bold}------------------------------------------------------${normal}"
 
 echo "${bold}Adding prometheus stack to the cluster${normal}"
 helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
+echo "${bold}------------------------------------------------------${normal}"
+
+echo  "${bold}Adding elasticsearch and kibana to the cluster${normal}"
+cd elastic
+helm install elasticsearch elastic/elasticsearch -f ./values.yaml -n elastic
+helm install kibana elastic/kibana -n elastic
+echo "${bold}ELASTIC USERNAME:${normal} $(kubectl get secret elasticsearch-master-credentials -o jsonpath='{.data}' -n elastic | jq -r .username | base64 --decode)"
+echo "${bold}ELASTIC PASSWORD:${normal} $(kubectl get secret elasticsearch-master-credentials -o jsonpath='{.data}' -n elastic | jq -r .password | base64 --decode)"
 echo "${bold}------------------------------------------------------${normal}"
