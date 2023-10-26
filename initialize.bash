@@ -10,11 +10,13 @@ kubectl create namespace personal
 kubectl create namespace monitoring
 echo "Build docker image for service-a and load it in minikube"
 cd service-a
+npm i
 docker build -t service-a .
 minikube image load service-a
 cd ..
 echo "Build docker image for service-b and load it in minikube"
 cd service-b
+npm i
 docker build -t service-b .
 minikube image load service-b
 cd ..
