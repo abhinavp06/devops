@@ -19,6 +19,30 @@ kubectl create namespace monitoring
 kubectl create namespace elastic
 echo "${bold}------------------------------------------------------${normal}"
 
+echo "${bold}Adding prometheus stack to the cluster${normal}"
+helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
+echo "${bold}------------------------------------------------------${normal}"
+
+echo "${bold}Adding elasticsearch and kibana to the cluster${normal}"
+cd elastic
+helm install elasticsearch elastic/elasticsearch -f ./values.yaml -n elastic
+helm install kibana elastic/kibana -n elastic
+echo "${bold}ELASTIC USERNAME:${normal} $(kubectl get secret elasticsearch-master-credentials -o jsonpath='{.data}' -n elastic | jq -r .username | base64 --decode)"
+echo "${bold}ELASTIC PASSWORD:${normal} $(kubectl get secret elasticsearch-master-credentials -o jsonpath='{.data}' -n elastic | jq -r .password | base64 --decode)"
+echo "${bold}Please expose kibana to view dashboards locally${normal}"
+cd ..
+echo "${bold}------------------------------------------------------${normal}"
+
+echo "${bold}Adding metricbeat${normal}"
+helm install metricbeat elastic/metricbeat -n elastic
+echo "${bold}------------------------------------------------------${normal}"
+
+echo "${bold}Adding logstash and filebeat${normal}"
+helm install logstash elastic/logstash -n elastic
+helm install filebeat elastic/filebeat -n elastic
+kubectl apply -f elastic/filebeat/filebeat-filebeat-daemonset-config.yaml
+echo "${bold}------------------------------------------------------${normal}"
+
 echo "${bold}Building docker image for service-a${normal}"
 cd service-a
 npm i
@@ -45,22 +69,4 @@ echo "${bold}------------------------------------------------------${normal}"
 echo "${bold}Adding service-a and service-b to the cluster${normal}"
 kubectl apply -f dryrun-a.yaml -n personal
 kubectl apply -f dryrun-b.yaml -n personal
-echo "${bold}------------------------------------------------------${normal}"
-
-echo "${bold}Adding prometheus stack to the cluster${normal}"
-helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
-echo "${bold}------------------------------------------------------${normal}"
-
-echo "${bold}Adding elasticsearch and kibana to the cluster${normal}"
-cd elastic
-helm install elasticsearch elastic/elasticsearch -f ./values.yaml -n elastic
-helm install kibana elastic/kibana -n elastic
-echo "${bold}ELASTIC USERNAME:${normal} $(kubectl get secret elasticsearch-master-credentials -o jsonpath='{.data}' -n elastic | jq -r .username | base64 --decode)"
-echo "${bold}ELASTIC PASSWORD:${normal} $(kubectl get secret elasticsearch-master-credentials -o jsonpath='{.data}' -n elastic | jq -r .password | base64 --decode)"
-echo "${bold}Please expose elasticsearch and kibana to view dashboards locally${normal}"
-cd ..
-echo "${bold}------------------------------------------------------${normal}"
-
-echo "${bold}Adding metricbeat${normal}"
-helm install metricbeat elastic/metricbeat -n elastic
 echo "${bold}------------------------------------------------------${normal}"
