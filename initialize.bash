@@ -8,7 +8,7 @@ helm repo add elastic https://helm.elastic.co
 echo "${bold}------------------------------------------------------${normal}"
 
 echo "${bold}Starting minikube${normal}"
-minikube start
+minikube start --memory 8192 --cpus 2
 echo "${bold}------------------------------------------------------${normal}"
 echo "${bold}Adding minikube metrics-server addon${normal}"
 minikube addons enable metrics-server
@@ -51,12 +51,16 @@ echo "${bold}Adding prometheus stack to the cluster${normal}"
 helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
 echo "${bold}------------------------------------------------------${normal}"
 
-echo  "${bold}Adding elasticsearch and kibana to the cluster${normal}"
+echo "${bold}Adding elasticsearch and kibana to the cluster${normal}"
 cd elastic
 helm install elasticsearch elastic/elasticsearch -f ./values.yaml -n elastic
 helm install kibana elastic/kibana -n elastic
 echo "${bold}ELASTIC USERNAME:${normal} $(kubectl get secret elasticsearch-master-credentials -o jsonpath='{.data}' -n elastic | jq -r .username | base64 --decode)"
 echo "${bold}ELASTIC PASSWORD:${normal} $(kubectl get secret elasticsearch-master-credentials -o jsonpath='{.data}' -n elastic | jq -r .password | base64 --decode)"
-echo "${bold}Please expose kibana to view dashboards locally${normal}"
+echo "${bold}Please expose elasticsearch and kibana to view dashboards locally${normal}"
 cd ..
+echo "${bold}------------------------------------------------------${normal}"
+
+echo "${bold}Adding metricbeat${normal}"
+helm install metricbeat elastic/metricbeat -n elastic
 echo "${bold}------------------------------------------------------${normal}"
