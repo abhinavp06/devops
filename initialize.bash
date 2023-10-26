@@ -8,7 +8,7 @@ helm repo add elastic https://helm.elastic.co
 echo "${bold}------------------------------------------------------${normal}"
 
 echo "${bold}Starting minikube${normal}"
-minikube start --memory 8192 --cpus 2
+minikube start --memory 8192 --cpus 4
 echo "${bold}------------------------------------------------------${normal}"
 echo "${bold}Adding minikube metrics-server addon${normal}"
 minikube addons enable metrics-server
