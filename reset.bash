@@ -10,7 +10,7 @@ echo "${bold}Deleting 'elastic' namespace${normal}"
 kubectl delete namespace elastic
 echo "${bold}Stopping minikube cluster${normal}"
 minikube stop
-echo "${bold}Deleting minikube cluster${normal}"
-minikube delete
 echo ${bold}"Deleting minikube profile${normal}"
 minikube delete --profile minikube
+echo "${bold}Deleting minikube cluster${normal}"
+minikube delete
