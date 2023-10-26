@@ -32,8 +32,8 @@ docker build -t service-b .
 cd ..
 echo "${bold}------------------------------------------------------${normal}"
 echo "${bold}Loading docker images for service-a and service-b in minikube${normal}"
-minikube image load service-a
-minikube image load service-b
+minikube image load service-a:latest
+minikube image load service-b:latest
 echo "${bold}------------------------------------------------------${normal}"
 
 echo "${bold}Creating dryrun file for 'service-a'${normal}"
