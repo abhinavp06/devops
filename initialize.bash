@@ -44,3 +44,7 @@ echo "${bold}Adding service-a and service-b to the cluster${normal}"
 kubectl apply -f dryrun-a.yaml -n personal
 kubectl apply -f dryrun-b.yaml -n personal
 echo "${bold}------------------------------------------------------${normal}"
+
+echo "${bold}Adding prometheus stack to the cluster${normal}"
+helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
+echo "${bold}------------------------------------------------------${normal}"
