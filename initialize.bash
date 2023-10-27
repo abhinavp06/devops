@@ -23,9 +23,10 @@ echo "${bold}Adding prometheus stack to the cluster${normal}"
 helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
 echo "${bold}------------------------------------------------------${normal}"
 
-echo "${bold}Adding elasticsearch and kibana to the cluster${normal}"
-cd elastic
+echo "${bold}Adding elasticsearch and kibana to the cluster (this may take some time)${normal}"
+cd elk
 helm install elasticsearch elastic/elasticsearch -f ./values.yaml -n elastic
+sleep 180
 helm install kibana elastic/kibana -n elastic
 echo "${bold}ELASTIC USERNAME:${normal} $(kubectl get secret elasticsearch-master-credentials -o jsonpath='{.data}' -n elastic | jq -r .username | base64 --decode)"
 echo "${bold}ELASTIC PASSWORD:${normal} $(kubectl get secret elasticsearch-master-credentials -o jsonpath='{.data}' -n elastic | jq -r .password | base64 --decode)"
@@ -40,7 +41,7 @@ echo "${bold}------------------------------------------------------${normal}"
 echo "${bold}Adding logstash and filebeat${normal}"
 helm install logstash elastic/logstash -n elastic
 helm install filebeat elastic/filebeat -n elastic
-kubectl apply -f elastic/filebeat/filebeat-filebeat-daemonset-config.yaml
+kubectl apply -f elk/filebeat/filebeat-filebeat-daemonset-config.yaml
 echo "${bold}------------------------------------------------------${normal}"
 
 echo "${bold}Building docker image for service-a${normal}"
@@ -55,7 +56,7 @@ npm i
 docker build -t service-b .
 cd ..
 echo "${bold}------------------------------------------------------${normal}"
-echo "${bold}Loading docker images for service-a and service-b in minikube${normal}"
+echo "${bold}Loading docker images for service-a and service-b in minikube (this may take some time)${normal}"
 minikube image load service-a:latest
 minikube image load service-b:latest
 echo "${bold}------------------------------------------------------${normal}"

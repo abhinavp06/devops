@@ -25,7 +25,6 @@ metadata:
   annotations:
     meta.helm.sh/release-name: filebeat
     meta.helm.sh/release-namespace: elastic
-  creationTimestamp: '2023-10-26T13:09:53Z'
   labels:
     app: filebeat-filebeat
     app.kubernetes.io/managed-by: Helm
@@ -53,8 +52,5 @@ metadata:
             f:release: {}
       manager: helm
       operation: Update
-      time: '2023-10-26T13:09:53Z'
   name: filebeat-filebeat-daemonset-config
   namespace: elastic
-  resourceVersion: '2097'
-  uid: c8d1d940-189e-46ae-b059-623539878caf
