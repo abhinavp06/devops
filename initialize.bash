@@ -38,8 +38,7 @@ echo "${bold}Adding metricbeat${normal}"
 helm install metricbeat elastic/metricbeat -n elastic
 echo "${bold}------------------------------------------------------${normal}"
 
-echo "${bold}Adding logstash and filebeat${normal}"
-helm install logstash elastic/logstash -n elastic
+echo "${bold}Adding filebeat${normal}"
 helm install filebeat elastic/filebeat -n elastic
 kubectl apply -f elk/filebeat/filebeat-filebeat-daemonset-config.yaml
 echo "${bold}------------------------------------------------------${normal}"
