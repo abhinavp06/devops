@@ -12,7 +12,7 @@ spec:
           containers:
             - name: {{ .Values.APP.hello_cron }}
               image: curlimages/curl
-              imagePullPolicy: Always
+              imagePullPolicy: IfNotPresent
               command:
                 [
                   '/bin/sh',

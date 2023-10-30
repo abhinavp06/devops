@@ -80,3 +80,29 @@ spec:
         target:
           type: Utilization
           averageUtilization: 600
+---
+# Source: service-a/templates/hello-cronjob.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: service-a-hello-cron
+  namespace: personal
+spec:
+  schedule: '* * * * *'
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: service-a-hello-cron
+              image: curlimages/curl
+              imagePullPolicy: IfNotPresent
+              command:
+                [
+                  '/bin/sh',
+                  '-c',
+                  'curl --insecure  -X GET http://service-a.personal/hello'
+                ]
+          restartPolicy: OnFailure
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
