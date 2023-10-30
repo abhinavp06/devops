@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.APP.hello_cron }}
+  namespace: {{ .Values.namespace }}
+spec:
+  schedule: '* * * * *'
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: {{ .Values.APP.hello_cron }}
+              image: curlimages/curl
+              imagePullPolicy: Always
+              command:
+                [
+                  '/bin/sh',
+                  '-c',
+                  'curl --insecure  -X GET {{.Values.APP.SERVICE_B_BASE_URL}}/hello'
+                ]
+          restartPolicy: OnFailure
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1

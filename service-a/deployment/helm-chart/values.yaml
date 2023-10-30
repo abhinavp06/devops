@@ -27,3 +27,5 @@ APP:
   # BASE
   PORT: 3000
   NODE_ENV: dev
+  hello_cron: service_a_hello_cron
+  SERVICE_A_BASE_URL: http://service-a.personal
