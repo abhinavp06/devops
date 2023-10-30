@@ -1,18 +1,29 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-filebeat-daemonset-config
+  namespace: elastic
+  labels:
+    app: filebeat-filebeat
+    app.kubernetes.io/managed-by: Helm
+    chart: filebeat-8.5.1
+    heritage: Helm
+    release: filebeat
+  annotations:
+    meta.helm.sh/release-name: filebeat
+    meta.helm.sh/release-namespace: elastic
 data:
   filebeat.yml: |
     filebeat.inputs:
     - type: container
       paths:
-        - /var/log/containers/*.log
-        - "/var/log/containers/*-${data.kubernetes.container.id}.log"
+        - "/var/log/containers/*.log"
       processors:
       - add_kubernetes_metadata:
           host: ${NODE_NAME}
           matchers:
           - logs_path:
               logs_path: "/var/log/containers/"
-
     output.elasticsearch:
       host: '${NODE_NAME}'
       hosts: '["https://${ELASTICSEARCH_HOSTS:elasticsearch-master:9200}"]'
@@ -20,37 +31,3 @@ data:
       password: '${ELASTICSEARCH_PASSWORD}'
       protocol: https
       ssl.certificate_authorities: ["/usr/share/filebeat/certs/ca.crt"]
-kind: ConfigMap
-metadata:
-  annotations:
-    meta.helm.sh/release-name: filebeat
-    meta.helm.sh/release-namespace: elastic
-  labels:
-    app: filebeat-filebeat
-    app.kubernetes.io/managed-by: Helm
-    chart: filebeat-8.5.1
-    heritage: Helm
-    release: filebeat
-  managedFields:
-    - apiVersion: v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:data:
-          .: {}
-          f:filebeat.yml: {}
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:meta.helm.sh/release-name: {}
-            f:meta.helm.sh/release-namespace: {}
-          f:labels:
-            .: {}
-            f:app: {}
-            f:app.kubernetes.io/managed-by: {}
-            f:chart: {}
-            f:heritage: {}
-            f:release: {}
-      manager: helm
-      operation: Update
-  name: filebeat-filebeat-daemonset-config
-  namespace: elastic
