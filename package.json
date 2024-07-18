@@ -1,0 +1,17 @@
+{
+  "name": "clickhouse-exp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "abhinavp06",
+  "license": "ISC",
+  "dependencies": {
+    "@clickhouse/client": "^1.4.0",
+    "stream-chain": "^2.2.5",
+    "stream-json": "^1.8.0",
+    "uuid": "^10.0.0"
+  }
+}
